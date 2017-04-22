@@ -1,89 +1,112 @@
 #include "Guild.h"
+#include <memory>
+#include <iterator>
+#include <iostream>
 
-Guild::Guild(std::string name) : _name(name)
+
+Guild::Guild(std::string name)
 {
+	this->_name = name;
 }
 
 Guild::~Guild()
 {
 }
 
-void Guild::AddMage(std::string name)
+void Guild::AddChar(std::shared_ptr<Adventurer> _chars)
 {
-	auto magePtr = std::make_shared<Mage>(name);
-	_mages.push_back(magePtr);
-}
-
-void Guild::AddPaladin(std::string name)
-{
-	auto paladin = std::make_shared<Paladin>(name);
-	_paladins.push_back(paladin);
-}
-
-void Guild::AddRanger(std::string name)
-{
-	auto ranger = std::make_shared<Ranger>(name);
-	_rangers.push_back(ranger);
-}
-
-void Guild::AddWarrior(std::string name)
-{
-	auto warrior = std::make_shared<Warrior>(name);
-	_warriors.push_back(warrior);
+	chars.push_back(_chars);
 }
 
 std::string Guild::GetInfo()
 {
-	std::string output = "Your guild has: \n";	
+	std::string output = "Your guild has: \n";
+	int mages = 0, 
+		rangers = 0, 
+		warriors = 0,
+		paladins = 0;
 
-	output += _mages.size()		> 0 ? std::to_string(_mages.size()) + " mages\n" : "No mages!\n";
-	output += _rangers.size()	> 0 ? std::to_string(_rangers.size()) + " rangers\n" : "No rangers!\n";
-	output += _warriors.size()	> 0 ? std::to_string(_warriors.size()) + " warriors\n" : "No warriors!\n";
-	output += _paladins.size()	> 0 ? std::to_string(_paladins.size()) + " paladins\n" : "No paladins!\n";
+	for (std::vector<std::shared_ptr<Adventurer>>::iterator it = chars.begin(); it != chars.end(); it++)
+	{
+		if (std::dynamic_pointer_cast<Mage>(*it) != nullptr)
+		{
+			mages++;
+		}
+		else if (std::dynamic_pointer_cast<Ranger>(*it) != nullptr)
+		{
+			rangers++;
+		}
+		else if (std::dynamic_pointer_cast<Warrior>(*it) != nullptr)
+		{
+			warriors++;
+		}
+		else if (std::dynamic_pointer_cast<Paladin>(*it) != nullptr)
+		{
+			paladins++;
+		}
+	}
+
+	output += mages		> 0 ? std::to_string(mages) + " mages\n" : "No mages!\n";
+	output += rangers	> 0 ? std::to_string(rangers) + " rangers\n" : "No rangers!\n";
+	output += warriors	> 0 ? std::to_string(warriors) + " warriors\n" : "No warriors!\n";
+	output += paladins	> 0 ? std::to_string(paladins) + " paladins\n" : "No paladins!\n";
+
 	return output;
 }
 
 std::string Guild::AttackWithMages()
 {
-	std::string output = "You command your mages to attack! \n";
-	if (_mages.size() > 0) {
-		for (auto mage : _mages) {
-			output += mage->Attack() + "\n";
+	std::string output;
+	for (std::vector<std::shared_ptr<Adventurer>>::iterator it = chars.begin(); it != chars.end(); it++)
+	{
+		if (std::dynamic_pointer_cast<Mage>(*it))
+		{
+			output += (*it)->attack();
 		}
 	}
+
 	return output;
 }
 
 std::string Guild::AttackWithPaladins()
 {
-	std::string output = "You command your paladins to attack! \n";
-	if (_paladins.size() > 0) {
-		for (auto paladin : _paladins) {
-			output += paladin->Attack() + "\n";
+	std::string output;
+	for (std::vector<std::shared_ptr<Adventurer>>::iterator it = chars.begin(); it != chars.end(); it++)
+	{
+		if (std::dynamic_pointer_cast<Paladin>(*it))
+		{
+			output += (*it)->attack();
 		}
 	}
+
 	return output;
 }
 
 std::string Guild::AttackWithRangers()
 {
-	std::string output = "You command your rangers to attack! \n";
-	if (_rangers.size() > 0) {
-		for (auto ranger : _rangers) {
-			output += ranger->Attack() + "\n";
+	std::string output;
+	for (std::vector<std::shared_ptr<Adventurer>>::iterator it = chars.begin(); it != chars.end(); it++)
+	{
+		if (std::dynamic_pointer_cast<Ranger>(*it))
+		{
+			output += (*it)->attack();
 		}
 	}
+
 	return output;
 }
 
 std::string Guild::AttackWithWarriors()
 {
-	std::string output = "You command your warriors to attack! \n";
-	if (_warriors.size() > 0) {
-		for (auto warrior : _warriors) {
-			output += warrior->Attack() + "\n";
+	std::string output;
+	for (std::vector<std::shared_ptr<Adventurer>>::iterator it = chars.begin(); it != chars.end(); it++)
+	{
+		if (std::dynamic_pointer_cast<Warrior>(*it))
+		{
+			output += (*it)->attack();
 		}
 	}
+
 	return output;
 }
 
